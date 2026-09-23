@@ -55,8 +55,74 @@ export async function GET(request) {
 
     const query = { source: "admin" };
     if (category && category !== "all") {
-      query.category = category;
+      const catLower = String(category).toLowerCase();
+      if (catLower === "home-printers" || catLower === "home") {
+        query.$and = [
+          {
+            $or: [
+              { usageCategory: { $in: [/^home$/i, "Home"] } },
+              { title: { $regex: /deskjet|envy|smart tank|home/i } },
+              { shortDesc: { $regex: /deskjet|envy|smart tank|home/i } },
+            ],
+          },
+          { title: { $not: { $regex: /toner|cartridge|ink bottle/i } } },
+        ];
+      } else if (catLower === "office-printers" || catLower === "office") {
+        query.$and = [
+          {
+            $or: [
+              { usageCategory: { $in: [/^office$/i, "Office"] } },
+              { title: { $regex: /office|officejet|laserjet|pro|enterprise/i } },
+              { shortDesc: { $regex: /office|officejet|laserjet|pro|enterprise/i } },
+            ],
+          },
+          { title: { $not: { $regex: /toner|cartridge|ink bottle/i } } },
+        ];
+      } else if (catLower === "laser-printers" || catLower === "laser") {
+        query.$and = [
+          {
+            $or: [
+              { technology: { $in: [/laser/i, "Laser", "Laser (B/W)"] } },
+              { category: "698238c9aafc80955cc50c40" },
+              { title: { $regex: /laser|laserjet/i } },
+            ],
+          },
+          { title: { $not: { $regex: /toner|cartridge|drum/i } } },
+        ];
+      } else if (catLower === "inkjet-printers" || catLower === "inkjet") {
+        query.$and = [
+          {
+            $or: [
+              { technology: { $in: [/inkjet/i, "Inkjet"] } },
+              { category: "698238b9aafc80955cc50c3b" },
+              { title: { $regex: /inkjet|smart tank|deskjet|envy|officejet/i } },
+            ],
+          },
+          { title: { $not: { $regex: /toner|cartridge|ink bottle/i } } },
+        ];
+      } else if (
+        catLower === "ink-toner" ||
+        catLower === "supplies" ||
+        catLower === "genuine-supplies"
+      ) {
+        query.$or = [
+          {
+            category: {
+              $in: [
+                "698238e1aafc80955cc50c4a",
+                "6aa5d0fa035a474cc5e0c719",
+                "supplies",
+                "ink-toner",
+              ],
+            },
+          },
+          { title: { $regex: /toner|cartridge|ink bottle|drum|ribbon|printhead/i } },
+        ];
+      } else {
+        query.category = category;
+      }
     }
+
     if (brand && brand !== "All Brands") {
       query.brand = { $regex: new RegExp(`^${brand}$`, "i") };
     }
