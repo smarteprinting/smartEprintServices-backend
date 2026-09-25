@@ -1,6 +1,4 @@
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_TLS_REJECT_UNAUTHORIZED=falseimport { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { escapeHtml, validateEmail, validatePhone, validateText, verifyTurnstile } from '../../../lib/security';
 
