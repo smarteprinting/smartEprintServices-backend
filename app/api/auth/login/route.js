@@ -8,6 +8,13 @@ export async function POST(request) {
     const { email, password } = await request.json();
     const normalizedEmail = typeof email === "string" ? email.toLowerCase().trim() : "";
 
+    if (!process.env.MONGODB_URI || !process.env.JWT_SECRET) {
+      return NextResponse.json(
+        { success: false, message: "Authentication service is not configured." },
+        { status: 503 },
+      );
+    }
+
     if (!normalizedEmail || !password) {
       return NextResponse.json(
         { success: false, message: "Email and password are required." },
