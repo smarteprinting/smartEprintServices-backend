@@ -43,6 +43,7 @@ export async function POST(req) {
     const smtpPassword = process.env.SMTP_PASSWORD;
     const smtpTo = process.env.SMTP_TO;
     const smtpFrom = process.env.SMTP_FROM || smtpUser;
+    const smtpRejectUnauthorized = process.env.SMTP_TLS_REJECT_UNAUTHORIZED !== 'false';
 
     if (!smtpUser || !smtpPassword) {
       console.error('SMTP credentials missing.');
@@ -62,7 +63,7 @@ export async function POST(req) {
         pass: smtpPassword,
       },
       tls: {
-        rejectUnauthorized: true,
+        rejectUnauthorized: smtpRejectUnauthorized,
       },
       connectionTimeout: 10000,
       greetingTimeout: 10000,

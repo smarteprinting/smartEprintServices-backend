@@ -1,4 +1,6 @@
-import { NextResponse } from 'next/server';
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_TLS_REJECT_UNAUTHORIZED=falseimport { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { escapeHtml, validateEmail, validatePhone, validateText, verifyTurnstile } from '../../../lib/security';
 
@@ -118,6 +120,7 @@ export async function POST(req) {
     const smtpPassword = process.env.SMTP_PASSWORD;
     const smtpTo = process.env.SMTP_TO;
     const smtpFrom = process.env.SMTP_FROM || smtpUser;
+    const smtpRejectUnauthorized = process.env.SMTP_TLS_REJECT_UNAUTHORIZED !== 'false';
 
     if (!smtpUser || !smtpPassword) {
       console.error('SMTP credentials missing. SMTP_USER:', !!smtpUser, 'SMTP_PASSWORD:', !!smtpPassword);
@@ -139,7 +142,7 @@ export async function POST(req) {
         pass: smtpPassword,
       },
       tls: {
-        rejectUnauthorized: true,
+        rejectUnauthorized: smtpRejectUnauthorized,
       },
       connectionTimeout: 10000, // 10 seconds
       greetingTimeout: 10000,
