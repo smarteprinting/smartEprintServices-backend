@@ -7,12 +7,19 @@ export async function POST(request) {
   try {
     const { username, password } = await request.json();
 
-    const envAdminUser = process.env.ADMIN_USERNAME || "admin";
-    const envAdminPass = process.env.ADMIN_PASSWORD || "admin123";
+    const envAdminUser = process.env.ADMIN_USERNAME;
+    const envAdminPass = process.env.ADMIN_PASSWORD;
+
+    if (!envAdminUser || !envAdminPass) {
+      return NextResponse.json(
+        { success: false, message: "Admin authentication is not configured." },
+        { status: 503 },
+      );
+    }
 
     // 1. Check default environment admin
     if (
-      (username === envAdminUser || username === "admin@smarteprintservices.com") &&
+      username === envAdminUser &&
       password === envAdminPass
     ) {
       const token = await generateToken("admin-super", "admin@smarteprintservices.com", true);
@@ -36,13 +43,15 @@ export async function POST(request) {
       response.cookies.set("auth_token", token, {
         path: "/",
         httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60,
       });
 
       response.cookies.set("admin-auth", "true", {
         path: "/",
-        httpOnly: false,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: 7 * 24 * 60 * 60,
       });
@@ -75,13 +84,15 @@ export async function POST(request) {
         response.cookies.set("auth_token", token, {
           path: "/",
           httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
           maxAge: 7 * 24 * 60 * 60,
         });
 
         response.cookies.set("admin-auth", "true", {
           path: "/",
-          httpOnly: false,
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
           sameSite: "lax",
           maxAge: 7 * 24 * 60 * 60,
         });

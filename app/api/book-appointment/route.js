@@ -139,8 +139,7 @@ export async function POST(req) {
         pass: smtpPassword,
       },
       tls: {
-        // Accept self-signed certificates (common with webmail/cPanel hosts)
-        rejectUnauthorized: false,
+        rejectUnauthorized: true,
       },
       connectionTimeout: 10000, // 10 seconds
       greetingTimeout: 10000,

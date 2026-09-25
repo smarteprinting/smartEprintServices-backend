@@ -56,12 +56,14 @@ export async function POST(request) {
     response.cookies.set("auth_token", token, {
       path: "/",
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60,
     });
     response.cookies.set("admin-auth", user.isAdmin ? "true" : "false", {
       path: "/",
-      httpOnly: false,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60,
     });

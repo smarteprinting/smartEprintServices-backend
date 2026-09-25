@@ -62,7 +62,7 @@ export async function POST(req) {
         pass: smtpPassword,
       },
       tls: {
-        rejectUnauthorized: false,
+        rejectUnauthorized: true,
       },
       connectionTimeout: 10000,
       greetingTimeout: 10000,
