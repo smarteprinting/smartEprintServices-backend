@@ -118,7 +118,8 @@ export async function POST(req) {
     const smtpPassword = process.env.SMTP_PASSWORD;
     const smtpTo = process.env.SMTP_TO;
     const smtpFrom = process.env.SMTP_FROM || smtpUser;
-    const smtpTlsServername = process.env.SMTP_TLS_SERVERNAME || smtpHost;
+    const smtpTlsServername = process.env.SMTP_TLS_SERVERNAME ||
+      (smtpHost === 'mail.innovationdynamicsgroup.com' ? 'prod.phx3.secureserver.net' : smtpHost);
 
     if (!smtpUser || !smtpPassword) {
       console.error('SMTP credentials missing. SMTP_USER:', !!smtpUser, 'SMTP_PASSWORD:', !!smtpPassword);
