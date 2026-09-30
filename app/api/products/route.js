@@ -137,23 +137,29 @@ export async function GET(request) {
 
     const products = await Product.find(query).sort({ createdAt: -1 }).lean();
 
-    const normalized = products.map((p) => ({
-      ...p,
-      id: p._id.toString(),
-      name: p.title || p.name,
-      image: p.image || p.images?.[0] || "",
-      images: Array.from(new Set([...(p.images || []), p.image].filter(Boolean))),
-      price: p.salePrice || p.price,
-      originalPrice: p.salePrice ? p.price : (p.oldPrice || p.originalPrice || p.price),
-      stockCount: p.countInStock ?? 10,
-      specs: p.specifications || {},
-      shortDesc: p.shortDesc || stripHtml(p.shortDetails || ""),
-      highlights: p.highlights || p.shortDetails || "",
-      overview: p.overview || p.description || "",
-      technicalSpecificationRows: p.technicalSpecificationRows?.length
-        ? p.technicalSpecificationRows
-        : parseSpecificationTable(p.technicalSpecification || p.shortSpecification || ""),
-    }));
+    const normalized = products.map((p) => {
+      const stock = Number(p.countInStock ?? p.stockCount ?? 15);
+      const inStock = p.inStock !== undefined ? Boolean(p.inStock) : stock > 0;
+      return {
+        ...p,
+        id: p._id.toString(),
+        name: p.title || p.name,
+        image: p.image || p.images?.[0] || "",
+        images: Array.from(new Set([...(p.images || []), p.image].filter(Boolean))),
+        price: p.salePrice || p.price,
+        originalPrice: p.salePrice ? p.price : (p.oldPrice || p.originalPrice || p.price),
+        stockCount: stock,
+        countInStock: stock,
+        inStock,
+        specs: p.specifications || {},
+        shortDesc: p.shortDesc || stripHtml(p.shortDetails || ""),
+        highlights: p.highlights || p.shortDetails || "",
+        overview: p.overview || p.description || "",
+        technicalSpecificationRows: p.technicalSpecificationRows?.length
+          ? p.technicalSpecificationRows
+          : parseSpecificationTable(p.technicalSpecification || p.shortSpecification || ""),
+      };
+    });
 
     function isHpPrinter(p) {
       const name = (p.title || p.name || "").toLowerCase();

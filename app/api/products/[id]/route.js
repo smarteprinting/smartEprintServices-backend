@@ -75,6 +75,9 @@ export async function GET(request, { params }) {
       );
     }
 
+    const stock = Number(product.countInStock ?? product.stockCount ?? 15);
+    const inStock = product.inStock !== undefined ? Boolean(product.inStock) : stock > 0;
+
     return NextResponse.json({
       success: true,
       product: {
@@ -84,6 +87,9 @@ export async function GET(request, { params }) {
         image: product.image || product.images?.[0] || "",
         price: product.salePrice || product.price,
         originalPrice: product.salePrice ? product.price : (product.oldPrice || product.originalPrice || product.price),
+        stockCount: stock,
+        countInStock: stock,
+        inStock,
         images: Array.from(new Set([...(product.images || []), product.image].filter(Boolean))),
         shortDesc: product.shortDesc || stripHtml(product.shortDetails || ""),
         highlights: product.highlights || product.shortDetails || "",
