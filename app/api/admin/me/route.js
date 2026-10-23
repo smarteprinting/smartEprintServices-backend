@@ -20,7 +20,7 @@ export async function GET(request) {
         authenticated: true,
         user: {
           id: "admin-super",
-          name: "Maple it services Admin",
+          name: "SmartEprint Services Admin",
           email: "admin@smarteprintservices.com",
           isAdmin: true,
         },
