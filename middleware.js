@@ -1,18 +1,28 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit } from "./lib/rateLimit";
 
-const allowedOrigins = (process.env.CORS_ORIGINS ||
-  "https://smarteprintservices.com,http://localhost:3000")
-  .split(",")
-  .map((origin) => origin.trim())
-  .concat(process.env.NODE_ENV === "production" ? [] : ["http://localhost:3002"])
-  .filter(Boolean);
+const defaultOrigins = [
+  "https://smarteprintservices.com",
+  "https://www.smarteprintservices.com",
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:3002",
+];
+
+const allowedOrigins = (process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
+  : defaultOrigins
+).filter(Boolean);
 
 export async function middleware(request) {
   const pathname = request.nextUrl.pathname;
   const isApiRequest = pathname.startsWith("/api/");
   const origin = request.headers.get("origin");
-  const isAllowedOrigin = origin && allowedOrigins.includes(origin);
+  const isAllowedOrigin =
+    origin &&
+    (allowedOrigins.includes(origin) ||
+      /^http:\/\/localhost(:\d+)?$/.test(origin) ||
+      /^http:\/\/127\.0\.0\.1(:\d+)?$/.test(origin));
 
   if (isApiRequest && request.method === "OPTIONS") {
     const response = new NextResponse(null, { status: 204 });
