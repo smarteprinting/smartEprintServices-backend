@@ -22,7 +22,7 @@ export async function POST(request) {
       username === envAdminUser &&
       password === envAdminPass
     ) {
-      const token = await generateToken("admin-super", "admin@smarteprintservices.com", true);
+      const token = await generateToken("admin-super", "admin@Mapleitservices.com", true);
 
       const response = NextResponse.json(
         {
@@ -31,7 +31,7 @@ export async function POST(request) {
           user: {
             id: "admin-super",
             name: "SmartEprint Admin",
-            email: "admin@smarteprintservices.com",
+            email: "admin@Mapleitservices.com",
             isAdmin: true,
           },
           token,

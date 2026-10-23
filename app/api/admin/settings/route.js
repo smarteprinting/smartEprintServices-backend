@@ -7,7 +7,7 @@ export async function GET(request) {
   try {
     if (!(await isAdminRequest(request))) return NextResponse.json({ success: false, message: "Admin authentication required" }, { status: 401 });
     await connectDB();
-    const settings = (await SiteSettings.findOne({ key: "company" }).lean()) || { key: "company", companyName: "SmartEprint Services", email: "support@smarteprintservices.com", currency: "USD" };
+    const settings = (await SiteSettings.findOne({ key: "company" }).lean()) || { key: "company", companyName: "SmartEprint Services", email: "support@Mapleitservices.com", currency: "USD" };
     return NextResponse.json({ success: true, settings });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message || "Failed to load settings" }, { status: 500 });

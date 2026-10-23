@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { checkRateLimit } from "./lib/rateLimit";
 
 const allowedOrigins = (process.env.CORS_ORIGINS ||
-  "https://smarteprintservices.com,http://localhost:3000")
+  "https://Mapleitservices.com,http://localhost:3000")
   .split(",")
   .map((origin) => origin.trim())
+  .concat(process.env.NODE_ENV === "production" ? [] : ["http://localhost:3002"])
   .filter(Boolean);
 
 export async function middleware(request) {

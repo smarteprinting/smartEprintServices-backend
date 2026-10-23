@@ -20,8 +20,8 @@ export async function GET(request) {
         authenticated: true,
         user: {
           id: "admin-super",
-          name: "SmartEprint Admin",
-          email: "admin@smarteprintservices.com",
+          name: "Maple it services Admin",
+          email: "admin@Mapleitservices.com",
           isAdmin: true,
         },
       });
